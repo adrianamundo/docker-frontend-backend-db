@@ -1,9 +1,41 @@
-version: "3.8"
+version: "3.7"
 services:
+  web:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - x
+    networks:
+      - front-x
+
+  x:
+    build: ./backend
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongo
+    networks: 
+     - back-x
+  
   mongo:
     image: mongo
     restart: always
+    volumes: 
+      - mongodb_data:/data/db
+
     environment: 
       MONGODB_INITDB_ROOT_USERNAME: username
       MONGODB_INITDB_ROOT_PASSWORD: password
+
     
+      
+    networks: 
+     - back-x
+
+networks:
+  back-x:
+  front-x:
+
+volumes: 
+  mongodb_data:
